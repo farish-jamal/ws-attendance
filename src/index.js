@@ -14,9 +14,9 @@ const { authenticate, authenticateTeacher } = require('./middleware');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// (async () => {
-//   await connectToDB();
-// })();
+(async () => {
+  await connectToDB();
+})();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
