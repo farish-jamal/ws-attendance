@@ -1,4 +1,5 @@
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const cors = require('cors');
 const bycrpt = require('bcrypt');
@@ -6,9 +7,7 @@ const { connectToDB } = require('./config/db');
 const { signupSchema, loginSchema, validClass } = require('./utils/zod');
 
 // Models
-const User = require('./model');
-const Class = require('./model');
-const Attendance = require('./model');
+const { User, Class } = require('./model');
 const { authenticate, authenticateTeacher } = require('./middleware');
 
 const app = express();
@@ -26,14 +25,17 @@ app.get('/health', (req, res) => {
    return res.send('Welcome to the Attendance Management System API');
 });
 
+
 app.post('/auth/signup', async (req, res) => {
     try {
         const result = signupSchema.safeParse(req.body);
+
+        console.log(result);
     
         if(!result.success) {
             return res.status(400).json({
                 success: false,
-                errors: result.error.errors
+                error: result.error.message,
             });
         }
     
@@ -76,7 +78,7 @@ app.post('/auth/login', async (req, res) => {
         if(!result.success) {
             return res.status(400).json({
                 success: false,
-                errors: result.error.errors
+                error: result.error.message,
             });
         }
     
@@ -120,7 +122,7 @@ app.post('/auth/login', async (req, res) => {
     }
 });
 
-app.post('/auth/me', authenticate, async (req, res) => {
+app.get('/auth/me', authenticate, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
         if(!user) {

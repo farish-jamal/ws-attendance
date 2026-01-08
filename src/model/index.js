@@ -58,3 +58,9 @@ const attendanceSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 const Class = mongoose.model('Class', classSchema);
 const Attendance = mongoose.model('Attendance', attendanceSchema);
+
+module.exports = {
+    User,
+    Class,
+    Attendance
+};
